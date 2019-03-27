@@ -74,7 +74,6 @@ function yc_save_post_class_meta($post_id, $post)
 	$new_meta_value = (isset($_POST['total-views']) ? sanitize_html_class($_POST['total-views']) : ’);
 	$new_meta_value2 = (isset($_POST['_video_thumbnail_']) ? sanitize_html_class($_POST['_video_thumbnail_']) : ’); // get video thumbnail.
 	/* Get the meta key. */
-
 	$meta_key = '_total_views_';
 	$meta_key_video_thumbnail_ = '_video_thumbnail_';
 
