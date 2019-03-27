@@ -196,7 +196,7 @@ $the_query = new WP_Query( array(
 
 while ( $the_query->have_posts() ) :   $the_query->the_post();
 
-			$str .= "<td> <img src='". get_post_meta( get_the_ID(), 'video_thumbnail_video_thumbnail', TRUE ) ."'> " . get_post_meta( get_the_ID(), 'total_views_total_views', TRUE )  ."</td>";
+			$str .= "<td> <img height='50' width='50' src='". get_post_meta( get_the_ID(), 'video_thumbnail_video_thumbnail', TRUE ) ."'> " . number_format(get_post_meta( get_the_ID(), 'total_views_total_views', TRUE )  )  ."</td>";
 endwhile;
 
 
