@@ -158,7 +158,7 @@ add_action('admin_head', 'admin_js');
 
 
 
-// Add Shortcode
+// Add Shortcode to display table
 function custom_shortcode() {
 
 $terms = get_terms([
@@ -167,30 +167,8 @@ $terms = get_terms([
 ]);
 
 
-// var_dump($terms);
-
-
-// $the_query = new WP_Query( array(
-//     'post_type' => 'Adverts',
-//     'tax_query' => array(
-//         array (
-//             'taxonomy' => 'youtubeactors',
-//             'field' => 'slug',
-//             'terms' => 'politics',
-//         )
-//     ),
-// ) );
-
-// while ( $the_query->have_posts() ) :
-//     $the_query->the_post();
-//     // Show Posts ...
-
-
-// endwhile;
-
-
 	$str = "<div class=table-responsive-xl>
-<table class='table table-condensed'>
+			<table class='table table-condensed'>
 		    <thead>
 		      <tr>
 		        <th>Artists</th>
@@ -201,13 +179,32 @@ $terms = get_terms([
 
  foreach ($terms as $value) {
 
-  $str .= "
-  		<tr>
-			<td>". $value->slug ."</td>
-			<td>v</td>
-			<td>v</td>
-		</tr>
-  ";
+	  $str .= "	<tr>	<td>". $value->slug ."</td>";
+
+
+
+$the_query = new WP_Query( array(
+    'post_type' => 'youtubecounter',
+    'tax_query' => array(
+        array (
+            'taxonomy' => 'youtubeactors',
+            'field' => 'slug',
+            'terms' => $value->slug,
+        )
+    ),
+) );
+
+while ( $the_query->have_posts() ) :   $the_query->the_post();
+
+			$str .= "<td> <img src='". get_post_meta( get_the_ID(), 'video_thumbnail_video_thumbnail', TRUE ) ."'> " . get_post_meta( get_the_ID(), 'total_views_total_views', TRUE )  ."</td>";
+endwhile;
+
+
+
+
+
+
+	$str .= "	</tr>  ";
 
  }
 
