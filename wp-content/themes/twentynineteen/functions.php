@@ -109,6 +109,9 @@ add_action( 'save_post', 'video_thumbnail_save' );
 
 
 
+
+
+
 function admin_js()
 { ?>
 <script type="text/javascript">
@@ -152,6 +155,68 @@ add_action('admin_head', 'admin_js');
 
 
 
+
+
+
+// Add Shortcode
+function custom_shortcode() {
+
+$terms = get_terms([
+    'taxonomy' => 'youtubeactors',
+    'hide_empty' => false,
+]);
+
+
+// var_dump($terms);
+
+
+// $the_query = new WP_Query( array(
+//     'post_type' => 'Adverts',
+//     'tax_query' => array(
+//         array (
+//             'taxonomy' => 'youtubeactors',
+//             'field' => 'slug',
+//             'terms' => 'politics',
+//         )
+//     ),
+// ) );
+
+// while ( $the_query->have_posts() ) :
+//     $the_query->the_post();
+//     // Show Posts ...
+
+
+// endwhile;
+
+
+	$str = "<div class=table-responsive-xl>
+<table class='table table-condensed'>
+		    <thead>
+		      <tr>
+		        <th>Artists</th>
+		        <th>&nbsp;</th>
+		      </tr>
+		    </thead>
+		    <tbody>";
+
+ foreach ($terms as $value) {
+
+  $str .= "
+  		<tr>
+			<td>". $value->slug ."</td>
+			<td>v</td>
+			<td>v</td>
+		</tr>
+  ";
+
+ }
+
+ 	 $str .= "</tbody> </table></div>";
+
+	return $str;
+
+}
+add_shortcode( 'youtubecounter', 'custom_shortcode' );
 
 
 
