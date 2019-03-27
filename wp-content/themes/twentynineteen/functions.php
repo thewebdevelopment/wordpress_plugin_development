@@ -1,110 +1,114 @@
 <?php
- /* Fire our meta box setup function on the post editor screen. */
-add_action('load-post.php', 'videocounter_post_meta_boxes_setup');
-add_action('load-post-new.php', 'videocounter_post_meta_boxes_setup');
-/* Meta box setup function. */
-function videocounter_post_meta_boxes_setup()
-{
-	/* Add meta boxes on the 'add_meta_boxes' hook. */
-	add_action('add_meta_boxes', 'yc_add_post_meta_boxes');
+function total_views_get_meta( $value ) {
+	global $post;
+
+	$field = get_post_meta( $post->ID, $value, true );
+	if ( ! empty( $field ) ) {
+		return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
+	} else {
+		return false;
+	}
 }
-/* Create one or more meta boxes to be displayed on the post editor screen. */
-function yc_add_post_meta_boxes()
-{
+
+function total_views_add_meta_box() {
 	add_meta_box(
-		'total-views',      // Unique ID
-		esc_html__('Vide Details', 'example'),    // Title
-		'yc_show_post_class_meta_box',   // Callback function
-		'youtubecounter',         // Admin page (or post type)
-		'normal',         // Context
-		'default'        // Priority
+		'total_views-total-views',
+		__( 'Total Views', 'total_views' ),
+		'total_views_html',
+		'youtubecounter',
+		'normal',
+		'low'
 	);
 
-	// video thumbnil.
+
 	add_meta_box(
-		'_video_thumbnail_',      // Unique ID
-		esc_html__('Vide Details'),    // Title
-		'yc_show_post_class_meta_box2',   // Callback function
-		'youtubecounter',         // Admin page (or post type)
-		'normal',         // Context
-		'default'        // Priority
+		'video_thumbnail-video-thumbnail',
+		__( 'Video Thumbnail', 'video_thumbnail' ),
+		'video_thumbnail_html',
+		'youtubecounter',
+		'normal',
+		'default'
 	);
+
 }
-function yc_show_post_class_meta_box2($post)
-{ ?>
-<?php wp_nonce_field(basename(__FILE__), 'yc_post_class_nonce'); ?>
-<p>
-    <label>Video Thumbnail</label>
-    <br />
-    <img src="https://sspride.org/wp-content/uploads/2017/03/image-placeholder-500x500-300x300.jpg" width="100" height="100" id="video_thumbnail" />
-    <input class="widefat" type="text" name="_video_thumbnail_" id="_video_thumbnail_" value="<?php echo esc_attr(get_post_meta($post->ID, '_video_thumbnail_', true)); ?>" size="30" style="display:none;" />
+add_action( 'add_meta_boxes', 'total_views_add_meta_box' );
+
+function total_views_html( $post) {
+	wp_nonce_field( '_total_views_nonce', 'total_views_nonce' ); ?>
+	<p>
+		<label for="total_views_total_views"><?php _e( 'Total Views', 'total_views' ); ?></label><br>
+		<input type="text" name="total_views_total_views" id="total_views_total_views" value="<?php echo total_views_get_meta( 'total_views_total_views' ); ?>">
+	</p>
+	<p>
+		<input type="button" value="Fetch Thumbnail and Views From Youtube" id="fetch">
+	</p>
+
+	<?php
+}
+
+function total_views_save( $post_id ) {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if ( ! isset( $_POST['total_views_nonce'] ) || ! wp_verify_nonce( $_POST['total_views_nonce'], '_total_views_nonce' ) ) return;
+	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+	if ( isset( $_POST['total_views_total_views'] ) )
+		update_post_meta( $post_id, 'total_views_total_views', esc_attr( $_POST['total_views_total_views'] ) );
+}
+add_action( 'save_post', 'total_views_save' );
+
+
+
+function video_thumbnail_get_meta( $value ) {
+	global $post;
+
+	$field = get_post_meta( $post->ID, $value, true );
+	if ( ! empty( $field ) ) {
+		return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
+	} else {
+		return false;
+	}
+}
+
+
+function video_thumbnail_html( $post) {
+	wp_nonce_field( '_video_thumbnail_nonce', 'video_thumbnail_nonce' ); ?>
+	<p>
+		<label for="video_thumbnail_video_thumbnail"><?php _e( 'Video Thumbnail', 'video_thumbnail' ); ?></label><br>
+
+		<?php
+		$link = video_thumbnail_get_meta( 'video_thumbnail_video_thumbnail' );
+		if ( $link != false ) {
+			$src = $link;
+		} else {
+			$src = "https://sspride.org/wp-content/uploads/2017/03/image-placeholder-500x500-300x300.jpg";
+		}
+		?>
+<img src="<?php echo $src; ?>" width="100" height="100" id="video_thumbnail" />
+
+<input type="text" name="video_thumbnail_video_thumbnail" id="video_thumbnail_video_thumbnail" value="<?php echo video_thumbnail_get_meta( 'video_thumbnail_video_thumbnail' ); ?>" style="display: none;">
+
 </p>
-<?php
-
+	<?php
 }
-/* Display the post meta box. */
-function yc_show_post_class_meta_box($post)
-{ ?>
-<?php wp_nonce_field(basename(__FILE__), 'yc_post_class_nonce'); ?>
-<p>
-    <label>Total Views</label>
-    <br />
-    <input class="widefat" type="text" name="total-views" id="total-views" value="<?php echo esc_attr(get_post_meta($post->ID, '_total_views_', true)); ?>" size="30" />
-</p>
-<p>
-    <input type="button" value="Fetch Thumbnail and Views From Youtube" id="fetch">
-</p>
-<?php
 
+function video_thumbnail_save( $post_id ) {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if ( ! isset( $_POST['video_thumbnail_nonce'] ) || ! wp_verify_nonce( $_POST['video_thumbnail_nonce'], '_video_thumbnail_nonce' ) ) return;
+	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+	if ( isset( $_POST['video_thumbnail_video_thumbnail'] ) )
+		update_post_meta( $post_id, 'video_thumbnail_video_thumbnail', esc_attr( $_POST['video_thumbnail_video_thumbnail'] ) );
 }
-/* Save post meta on the 'save_post' hook. */
-add_action('save_post', 'yc_save_post_class_meta', 10, 2);
-/* Save the meta box's post metadata. */
-function yc_save_post_class_meta($post_id, $post)
-{
-	/* Verify the nonce before proceeding. */
-	if (!isset($_POST['yc_post_class_nonce']) || !wp_verify_nonce($_POST['yc_post_class_nonce'], basename(__FILE__)))
-		return $post_id;
-	/* Get the post type object. */
-	$post_type = get_post_type_object($post->post_type);
-	/* Check if the current user has permission to edit the post. */
-	if (!current_user_can($post_type->cap->edit_post, $post_id))
-		return $post_id;
-	/* Get the posted data and sanitize it for use as an HTML class. */
-	$new_meta_value = (isset($_POST['total-views']) ? sanitize_html_class($_POST['total-views']) : ’);
-	$new_meta_value2 = (isset($_POST['_video_thumbnail_']) ? sanitize_html_class($_POST['_video_thumbnail_']) : ’); // get video thumbnail.
-	/* Get the meta key. */
-	$meta_key = '_total_views_';
-	$meta_key_video_thumbnail_ = '_video_thumbnail_';
-
-	/* Get the meta value of the custom field key. */
-	$meta_value = get_post_meta($post_id, $meta_key, true);
-	$meta_key_video_thumbnail_ = get_post_meta($post_id, $meta_key_video_thumbnail_, true); // thumbnail.
+add_action( 'save_post', 'video_thumbnail_save' );
 
 
-	/* If a new meta value was added and there was no previous value, add it. */
-	if ($new_meta_value && '’' == $meta_value)
-		add_post_meta($post_id, $meta_key, $new_meta_value, true);
-	/* If the new meta value does not match the old value, update it. */
-	elseif ($new_meta_value && $new_meta_value != $meta_value)
-		update_post_meta($post_id, $meta_key, $new_meta_value);
-	/* If there is no new meta value but an old value exists, delete it. */
-	elseif ('’' == $new_meta_value && $meta_value)
-		delete_post_meta($post_id, $meta_key, $meta_value);
-
-	// --------------------------------------------------------------------------------------------------------------------------------------------
-	/* If a new meta value was added and there was no previous value, add it. */
-	if ($new_meta_value2 && '’' == $meta_key_video_thumbnail_)
-		add_post_meta($post_id, $meta_key_video_thumbnail_, $new_meta_value2, true);
 
 
-	/* If the new meta value does not match the old value, update it. */
-	// elseif ($new_meta_value_video_thumbnail_ && $new_meta_value_video_thumbnail_ != $meta_key_video_thumbnail_)
-	// 	update_post_meta($post_id, $meta_key_video_thumbnail_, $new_meta_value_video_thumbnail_);
-	// /* If there is no new meta value but an old value exists, delete it. */
-	// elseif ('’' == $new_meta_value_video_thumbnail_ && $meta_key_video_thumbnail_)
-	// 	delete_post_meta($post_id, $meta_key_video_thumbnail_, $meta_key_video_thumbnail_);
-}
+
+
+
+
+
 function admin_js()
 { ?>
 <script type="text/javascript">
@@ -119,8 +123,8 @@ function admin_js()
             jQuery.get(url, function(data, status) {
                 // alert("Data: " + data + "\nStatus: " + status);
                 jQuery("#video_thumbnail").attr("src", data.items[0].snippet.thumbnails.default.url); // add video thumbnail src
-                jQuery("#_video_thumbnail_").attr("value", data.items[0].snippet.thumbnails.default.url); // add video thumbnail src
-                jQuery("input#total-views").val(data.items[0].statistics.viewCount); // add total views
+                jQuery("#video_thumbnail_video_thumbnail").attr("value", data.items[0].snippet.thumbnails.default.url); // add video thumbnail src
+                jQuery("input#total_views_total_views").val(data.items[0].statistics.viewCount); // add total views
                 // alert(data.items[0].snippet.thumbnails.default.url);
                 // console.log(data.items[0]);
                 // console.log(data);
