@@ -1,0 +1,34 @@
+.worldpay-settings-cotnainer{
+	padding-left: 7px;
+}
+.worldpay-settings-nav{
+	margin-top: 2.0em;
+}
+.wc-order-capture-charge-container{
+	display: flex;
+	flex-flow: wrap;
+    justify-content: flex-end;
+}
+.wc-order-capture-charge-container .wc-order-capture-charge{
+	text-align: right;
+}
+#woocommerce-worldpay-actions .capture-actions .cancel-action{
+	float: left;
+	margin-left: 0px;
+}
+#woocommerce-worldpay-actions .capture-actions button{
+	float: right;
+    margin-left: 4px;
+}
+#woocommerce-worldpay-actions .capture-actions{
+    margin-top: 5px;
+    padding-top: 12px;
+    border-top: 1px solid #dfdfdf;
+}
+.woocommerce table.form-table p.worldpay-webhook-url{
+	padding: 8px;
+	background: #fff;
+}
+.worldpay-settings-nav .nav-tab:first-of-type{
+	margin-left: 0;
+}

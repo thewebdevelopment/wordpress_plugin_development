@@ -1,0 +1,184 @@
+2019-04-02T12:27:29+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:27:29+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:28:06+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:28:06+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:28:20+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:28:20+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:28:23+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:28:23+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:29:06+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:29:06+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:29:10+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:29:10+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:29:51+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:29:51+00:00 ERROR Error creating Worldpay connection. Reason: Please enter your service key
+2019-04-02T12:30:41+00:00 ERROR Error processing Order 191. Reason: One of Token or Payment page config must be provided. JSON: Array
+(
+    [customerOrderCode] => 191
+    [token] => 
+    [amount] => 9100
+    [currencyCode] => GBP
+    [name] => sdaf asfdsfa
+    [authorizeOnly] => 
+    [orderDescription] => Order 191
+    [billingAddress] => Array
+        (
+            [address1] => sadfsadfasdfas
+            [address2] => 
+            [postalCode] => 343343
+            [city] => dfsadfsdf
+            [state] => BA
+            [countryCode] => PK
+        )
+
+    [deliveryAddress] => Array
+        (
+            [firstName] => sdaf
+            [lastName] => asfdsfa
+            [address1] => sadfsadfasdfas
+            [address2] => 
+            [postalCode] => 343343
+            [city] => dfsadfsdf
+            [state] => BA
+            [countryCode] => PK
+        )
+
+    [orderCodePrefix] => 
+    [orderCodeSuffix] => 
+    [settlementCurrency] => GBP
+    [shopperEmailAddress] => admin@admin.com
+    [shopperIpAddress] => ::1
+    [shopperSessionId] => 5ca355ecc8ab9
+    [is3DSOrder] => 
+)
+
+2019-04-02T12:35:08+00:00 INFO Order 192 processed. Response: Array
+(
+    [orderCode] => 769549f0-8cbe-4c06-8d1c-763d3fd01c5d
+    [token] => TEST_SU_90cabe1c-b763-44b0-9bdc-3bd7082cdfdd
+    [orderDescription] => Order 192
+    [amount] => 10300
+    [currencyCode] => GBP
+    [paymentStatus] => SUCCESS
+    [paymentResponse] => Array
+        (
+            [type] => ObfuscatedCard
+            [name] => sdaf asfdsfa
+            [expiryMonth] => 11
+            [expiryYear] => 2023
+            [cardType] => MASTERCARD_CREDIT
+            [maskedCardNumber] => **** **** **** 4444
+            [billingAddress] => Array
+                (
+                    [address1] => sadfsadfasdfas
+                    [postalCode] => 343343
+                    [city] => dfsadfsdf
+                    [state] => BA
+                    [countryCode] => PK
+                )
+
+            [cardSchemeType] => consumer
+            [cardSchemeName] => MCI CREDIT
+            [cardIssuer] => LLOYDS BANK PLC
+            [countryCode] => GB
+            [cardClass] => credit
+            [cardProductTypeDescNonContactless] => MasterCard Business
+            [cardProductTypeDescContactless] => CL MasterCard Bus
+            [prepaid] => unknown
+        )
+
+    [is3DSOrder] => 
+    [authorizeOnly] => 
+    [deliveryAddress] => Array
+        (
+            [address1] => sadfsadfasdfas
+            [postalCode] => 343343
+            [city] => dfsadfsdf
+            [state] => BA
+            [countryCode] => PK
+            [firstName] => sdaf
+            [lastName] => asfdsfa
+        )
+
+    [settlementCurrency] => GBP
+    [shopperEmailAddress] => admin@admin.com
+    [customerOrderCode] => 192
+    [environment] => TEST
+    [riskScore] => Array
+        (
+            [value] => 1
+        )
+
+    [resultCodes] => Array
+        (
+            [avsResultCode] => APPROVED
+            [cvcResultCode] => APPROVED
+        )
+
+)
+
+2019-04-02T12:45:42+00:00 INFO Order 193 processed. Response: Array
+(
+    [orderCode] => 57e03336-99d2-45d5-967c-c5fed202acb6
+    [token] => TEST_SU_b555d6f1-8d47-4a39-9654-51f15f42a790
+    [orderDescription] => Order 193
+    [amount] => 2300
+    [currencyCode] => GBP
+    [paymentStatus] => SUCCESS
+    [paymentResponse] => Array
+        (
+            [type] => ObfuscatedCard
+            [name] => sdaf asfdsfa
+            [expiryMonth] => 10
+            [expiryYear] => 2023
+            [cardType] => MASTERCARD_CREDIT
+            [maskedCardNumber] => **** **** **** 4444
+            [billingAddress] => Array
+                (
+                    [address1] => sadfsadfasdfas
+                    [postalCode] => 343343
+                    [city] => dfsadfsdf
+                    [state] => BA
+                    [countryCode] => PK
+                )
+
+            [cardSchemeType] => consumer
+            [cardSchemeName] => MCI CREDIT
+            [cardIssuer] => LLOYDS BANK PLC
+            [countryCode] => GB
+            [cardClass] => credit
+            [cardProductTypeDescNonContactless] => MasterCard Business
+            [cardProductTypeDescContactless] => CL MasterCard Bus
+            [prepaid] => unknown
+        )
+
+    [is3DSOrder] => 
+    [authorizeOnly] => 
+    [deliveryAddress] => Array
+        (
+            [address1] => sadfsadfasdfas
+            [postalCode] => 343343
+            [city] => dfsadfsdf
+            [state] => BA
+            [countryCode] => PK
+            [firstName] => sdaf
+            [lastName] => asfdsfa
+        )
+
+    [settlementCurrency] => GBP
+    [shopperEmailAddress] => admin@admin.com
+    [customerOrderCode] => 193
+    [environment] => TEST
+    [riskScore] => Array
+        (
+            [value] => 1
+        )
+
+    [resultCodes] => Array
+        (
+            [avsResultCode] => APPROVED
+            [cvcResultCode] => APPROVED
+        )
+
+)
+

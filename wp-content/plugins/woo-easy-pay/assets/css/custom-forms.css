@@ -1,0 +1,128 @@
+@CHARSET "ISO-8859-1";
+/*************** Basic Form ******************/
+.worldpay-basic-form-container *{
+	    box-sizing: border-box;
+}
+.worldpay-basic-form-container .row{
+	width: 100%;
+	margin-bottom: 1em;
+	display: flex;
+    flex-flow: wrap;
+}
+
+.worldpay-basic-form-container label{
+	width: 100%;
+	color: #333;
+    display: block !important;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+.worldpay-basic-form-container input[type="text"],
+.worldpay-basic-form-container select{
+	font-size: 1em;
+}
+.worldpay-basic-form-container input[type="text"]::placeholder{
+	color: #ccc;
+}
+.worldpay-basic-form-container input[type="text"]{
+	color: #666;
+    background: #fff;
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
+    border: 1px solid #bbb;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    display: block;
+    padding: 0.5em;
+    width: 100%;
+    margin-right: 0 !important
+}
+
+.worldpay-basic-form-container select{
+	border: 1px solid #bbb;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    height: auto;
+    max-width: 100%;
+    padding: 0.5em;
+    background-color: #fff;
+}
+.worldpay-basic-form-container .card-number{
+	position: relative;
+}
+.worldpay-basic-form-container .worldpay-card-type{
+	width: 42px;
+    position: absolute !important;
+    right: 5px;
+    transform: translatey(-50%);
+    top: 50%;
+}
+.worldpay-basic-form-container img[src*="cc_format.svg"].worldpay-card-type{
+    border: 1px solid #bbb;
+    border-radius: 3px;
+}
+.worldpay-basic-form-container .col{
+	width: 100%;
+}
+.worldpay-basic-form-container .col-6{
+	width: 100%;
+}
+.worldpay-basic-form-container .cvc{
+	max-width: 80px
+}
+.worldpay-basic-form-container .cvv-group{
+	float: none;
+}
+.worldpay-basic-form-container  .exp-container{
+	margin-bottom: 1em;
+}
+@media(min-width: 510px){
+	.worldpay-basic-form-container .col-6{
+		width: 50%;
+	}
+	.worldpay-basic-form-container  .cvv-group{
+	float: right;
+	}
+	.worldpay-basic-form-container  .exp-container{
+	margin-bottom: 0;
+	}
+}
+/**************** Simple Form *******************/
+.worldpay-simple-form-container{
+	 box-sizing: border-box;
+}
+.worldpay-simple-form-container .worldpay-card-type{
+	width: 42px;
+    position: absolute !important;
+    right: 5px;
+    transform: translatey(-50%);
+    top: 50%;
+}
+.worldpay-simple-form-container img[src*="cc_format.svg"].worldpay-card-type{
+    border: 1px solid #bbb;
+    border-radius: 3px;
+}
+.worldpay-simple-form-container input[type="text"]::placeholder{
+	color: #ccc;
+}
+.worldpay-simple-form-container label{
+	width: 100%;
+	margin-bottom: 0.5em;
+	font-weight: 400;
+}
+.worldpay-simple-form-container .simple-row{
+	margin-bottom: 1em;
+	width: 100%;
+	position: relative;
+}
+.worldpay-simple-form-container .simple-row input{
+	padding: 12px;
+	border-radius: 6px;
+	border: 1px solid #dddddd;
+	transition: all 300ms ease-in-out;
+	width: 100%;
+	background-color: #fff;
+}
+.worldpay-simple-form-container .simple-row input:focus{
+	border: 1px solid #64d18a;
+	border-radius: 6px;
+}

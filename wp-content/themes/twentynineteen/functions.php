@@ -1,219 +1,108 @@
 <?php
-function total_views_get_meta( $value ) {
+function total_views_get_meta($value)
+{
 	global $post;
 
-	$field = get_post_meta( $post->ID, $value, true );
-	if ( ! empty( $field ) ) {
-		return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
+	$field = get_post_meta($post->ID, $value, true);
+	if (!empty($field)) {
+		return is_array($field) ? stripslashes_deep($field) : stripslashes(wp_kses_decode_entities($field));
 	} else {
 		return false;
 	}
 }
 
-function total_views_add_meta_box() {
+function total_views_add_meta_box()
+{
 	add_meta_box(
 		'total_views-total-views',
-		__( 'Total Views', 'total_views' ),
+		__('Total Views', 'total_views'),
 		'total_views_html',
 		'youtubecounter',
 		'normal',
 		'low'
 	);
-
-
 	add_meta_box(
 		'video_thumbnail-video-thumbnail',
-		__( 'Video Thumbnail', 'video_thumbnail' ),
+		__('Video Thumbnail', 'video_thumbnail'),
 		'video_thumbnail_html',
 		'youtubecounter',
 		'normal',
 		'default'
 	);
+}
+add_action('add_meta_boxes', 'total_views_add_meta_box');
+function total_views_html($post)
+{
+	wp_nonce_field('_total_views_nonce', 'total_views_nonce'); ?>
+<p>
+    <label for="total_views_total_views"><?php _e('Total Views', 'total_views'); ?></label><br>
+    <input type="text" name="total_views_total_views" id="total_views_total_views" value="<?php echo total_views_get_meta('total_views_total_views'); ?>">
+</p>
+<p>
+    <input type="button" value="Fetch Thumbnail and Views From Youtube" id="fetch">
+</p>
+<?php
 
 }
-add_action( 'add_meta_boxes', 'total_views_add_meta_box' );
+function total_views_save($post_id)
+{
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	if (!isset($_POST['total_views_nonce']) || !wp_verify_nonce($_POST['total_views_nonce'], '_total_views_nonce')) return;
+	if (!current_user_can('edit_post', $post_id)) return;
 
-function total_views_html( $post) {
-	wp_nonce_field( '_total_views_nonce', 'total_views_nonce' ); ?>
-	<p>
-		<label for="total_views_total_views"><?php _e( 'Total Views', 'total_views' ); ?></label><br>
-		<input type="text" name="total_views_total_views" id="total_views_total_views" value="<?php echo total_views_get_meta( 'total_views_total_views' ); ?>">
-	</p>
-	<p>
-		<input type="button" value="Fetch Thumbnail and Views From Youtube" id="fetch">
-	</p>
-
-	<?php
+	if (isset($_POST['total_views_total_views']))
+		update_post_meta($post_id, 'total_views_total_views', esc_attr($_POST['total_views_total_views']));
 }
-
-function total_views_save( $post_id ) {
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-	if ( ! isset( $_POST['total_views_nonce'] ) || ! wp_verify_nonce( $_POST['total_views_nonce'], '_total_views_nonce' ) ) return;
-	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
-
-	if ( isset( $_POST['total_views_total_views'] ) )
-		update_post_meta( $post_id, 'total_views_total_views', esc_attr( $_POST['total_views_total_views'] ) );
-}
-add_action( 'save_post', 'total_views_save' );
-
-
-
-function video_thumbnail_get_meta( $value ) {
+add_action('save_post', 'total_views_save');
+function video_thumbnail_get_meta($value)
+{
 	global $post;
 
-	$field = get_post_meta( $post->ID, $value, true );
-	if ( ! empty( $field ) ) {
-		return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
+	$field = get_post_meta($post->ID, $value, true);
+	if (!empty($field)) {
+		return is_array($field) ? stripslashes_deep($field) : stripslashes(wp_kses_decode_entities($field));
 	} else {
 		return false;
 	}
 }
+function video_thumbnail_html($post)
+{
+	wp_nonce_field('_video_thumbnail_nonce', 'video_thumbnail_nonce'); ?>
+<p>
+    <label for="video_thumbnail_video_thumbnail"><?php _e('Video Thumbnail', 'video_thumbnail'); ?></label><br>
 
-
-function video_thumbnail_html( $post) {
-	wp_nonce_field( '_video_thumbnail_nonce', 'video_thumbnail_nonce' ); ?>
-	<p>
-		<label for="video_thumbnail_video_thumbnail"><?php _e( 'Video Thumbnail', 'video_thumbnail' ); ?></label><br>
-
-		<?php
-		$link = video_thumbnail_get_meta( 'video_thumbnail_video_thumbnail' );
-		if ( $link != false ) {
-			$src = $link;
-		} else {
-			$src = "https://sspride.org/wp-content/uploads/2017/03/image-placeholder-500x500-300x300.jpg";
-		}
-		?>
-<img src="<?php echo $src; ?>" width="100" height="100" id="video_thumbnail" />
-
-<input type="text" name="video_thumbnail_video_thumbnail" id="video_thumbnail_video_thumbnail" value="<?php echo video_thumbnail_get_meta( 'video_thumbnail_video_thumbnail' ); ?>" style="display: none;">
-
+    <?php
+	$link = video_thumbnail_get_meta('video_thumbnail_video_thumbnail');
+	if ($link != false) {
+		$src = $link;
+	} else {
+		$src = "https://sspride.org/wp-content/uploads/2017/03/image-placeholder-500x500-300x300.jpg";
+	}
+	?>
+    <img src="<?php echo $src; ?>" width="100" height="100" id="video_thumbnail" />
+    <input type="text" name="video_thumbnail_video_thumbnail" id="video_thumbnail_video_thumbnail" value="<?php echo video_thumbnail_get_meta('video_thumbnail_video_thumbnail'); ?>" style="display: none;">
 </p>
-	<?php
-}
-
-function video_thumbnail_save( $post_id ) {
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-	if ( ! isset( $_POST['video_thumbnail_nonce'] ) || ! wp_verify_nonce( $_POST['video_thumbnail_nonce'], '_video_thumbnail_nonce' ) ) return;
-	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
-
-	if ( isset( $_POST['video_thumbnail_video_thumbnail'] ) )
-		update_post_meta( $post_id, 'video_thumbnail_video_thumbnail', esc_attr( $_POST['video_thumbnail_video_thumbnail'] ) );
-}
-add_action( 'save_post', 'video_thumbnail_save' );
-
-
-
-
-
-
-
-
-
-
-
-
-function admin_js()
-{ ?>
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery('#fetch').on('click', function() {
-            // console.log(jQuery('#title').val());
-            // get only video id from string.
-            var video_link = jQuery('#title').val(); // get video link.
-            var id = video_link.substr(32, 11);
-            var url = "https://content.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" + id + "&key=AIzaSyAblvIArQ_G37jRqlR8xORi-_w21v8fCn8";
-            // ajax request
-            jQuery.get(url, function(data, status) {
-                // alert("Data: " + data + "\nStatus: " + status);
-                jQuery("#video_thumbnail").attr("src", data.items[0].snippet.thumbnails.default.url); // add video thumbnail src
-                jQuery("#video_thumbnail_video_thumbnail").attr("value", data.items[0].snippet.thumbnails.default.url); // add video thumbnail src
-                jQuery("input#total_views_total_views").val(data.items[0].statistics.viewCount); // add total views
-                // alert(data.items[0].snippet.thumbnails.default.url);
-                // console.log(data.items[0]);
-                // console.log(data);
-            });
-        });
-        // convert checkboxes to radio
-        jQuery('form#post').find('.categorychecklist input').each(function() {
-            var new_input = jQuery('<input type="radio" />'),
-                attrLen = this.attributes.length;
-            for (i = 0; i < attrLen; i++) {
-                if (this.attributes[i].name != 'type') {
-                    new_input.attr(this.attributes[i].name.toLowerCase(), this.attributes[i].value);
-                }
-            }
-            jQuery(this).replaceWith(new_input);
-        });
-    });
-</script>
 <?php
 
 }
-add_action('admin_head', 'admin_js');
+function video_thumbnail_save($post_id)
+{
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	if (!isset($_POST['video_thumbnail_nonce']) || !wp_verify_nonce($_POST['video_thumbnail_nonce'], '_video_thumbnail_nonce')) return;
+	if (!current_user_can('edit_post', $post_id)) return;
 
-
-
-
-
-
-
-
-// Add Shortcode to display table
-function custom_shortcode() {
-
-$terms = get_terms([
-    'taxonomy' => 'youtubeactors',
-    'hide_empty' => false,
-]);
-
-
-	$str = "<div class=table-responsive-xl>
-			<table class='table table-condensed'>
-		    <thead>
-		      <tr>
-		        <th>Artists</th>
-		        <th>&nbsp;</th>
-		      </tr>
-		    </thead>
-		    <tbody>";
-
- foreach ($terms as $value) {
-
-	  $str .= "	<tr>	<td>". $value->slug ."</td>";
-
-
-
-$the_query = new WP_Query( array(
-    'post_type' => 'youtubecounter',
-    'tax_query' => array(
-        array (
-            'taxonomy' => 'youtubeactors',
-            'field' => 'slug',
-            'terms' => $value->slug,
-        )
-    ),
-) );
-
-while ( $the_query->have_posts() ) :   $the_query->the_post();
-
-			$str .= "<td> <img height='50' width='50' src='". get_post_meta( get_the_ID(), 'video_thumbnail_video_thumbnail', TRUE ) ."'> " . number_format(get_post_meta( get_the_ID(), 'total_views_total_views', TRUE )  )  ."</td>";
-endwhile;
-
-
-
-
-
-
-	$str .= "	</tr>  ";
-
- }
-
- 	 $str .= "</tbody> </table></div>";
-
-	return $str;
-
+	if (isset($_POST['video_thumbnail_video_thumbnail']))
+		update_post_meta($post_id, 'video_thumbnail_video_thumbnail', esc_attr($_POST['video_thumbnail_video_thumbnail']));
 }
-add_shortcode( 'youtubecounter', 'custom_shortcode' );
+add_action('save_post', 'video_thumbnail_save');
+
+
+
+
+
+
+
+
 
 
 
@@ -482,7 +371,7 @@ function twentynineteen_colors_css_wrap()
 	?>
 <style type="text/css" id="custom-theme-colors" <?php echo is_customize_preview() ? 'data-hue="' . absint($primary_color) . '"' : ''; ?>>
     <?php echo twentynineteen_custom_colors_css();
-		?>
+	?>
 </style>
 <?php
 
