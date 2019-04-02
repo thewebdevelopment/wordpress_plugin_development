@@ -1,0 +1,10 @@
+2019-03-29T06:53:12+00:00 CRITICAL Uncaught Error: Class 'WC_Gateway_Your_Gateway' not found in F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\class-wc-payment-gateways.php:108
+Stack trace:
+#0 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\class-wc-payment-gateways.php(70): WC_Payment_Gateways->init()
+#1 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\class-wc-payment-gateways.php(43): WC_Payment_Gateways->__construct()
+#2 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\class-woocommerce.php(690): WC_Payment_Gateways::instance()
+#3 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\wc-template-functions.php(64): WooCommerce->payment_gateways()
+#4 F:\wamp64\www\wordpress_plugin_development\wp-includes\class-wp-hook.php(286): wc_template_redirect('')
+#5 F:\wamp64\www\wordpress_plugin_development\wp-includes\class-wp-hook.php(310): WP_Hook->apply_filters(NULL, Array)
+#6 F:\wa in F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\class-wc-payment-gateways.php on line 108
+

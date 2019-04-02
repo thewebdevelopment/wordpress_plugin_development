@@ -1,0 +1,20 @@
+2019-04-02T07:18:40+00:00 CRITICAL Uncaught Error: Call to a member function add() on null in F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\my-worldpay-plugin\my-worldpay-plugin.php:113
+Stack trace:
+#0 F:\wamp64\www\wordpress_plugin_development\wp-includes\class-wp-hook.php(286): WC_Worldpay->receipt_page(189)
+#1 F:\wamp64\www\wordpress_plugin_development\wp-includes\class-wp-hook.php(310): WP_Hook->apply_filters('', Array)
+#2 F:\wamp64\www\wordpress_plugin_development\wp-includes\plugin.php(465): WP_Hook->do_action(Array)
+#3 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\templates\checkout\order-receipt.php(45): do_action('woocommerce_rec...', 189)
+#4 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\wc-core-functions.php(211): include('F:\\wamp64\\www\\w...')
+#5 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\shortcodes\class-wc-shortcode-checkout.php(200): wc_get_template('checkout/order-...', Array)
+#6 F:\wamp64\www\wordpress_plug in F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\my-worldpay-plugin\my-worldpay-plugin.php on line 113
+
+2019-04-02T07:19:20+00:00 CRITICAL Uncaught Error: Call to a member function add() on null in F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\my-worldpay-plugin\my-worldpay-plugin.php:111
+Stack trace:
+#0 F:\wamp64\www\wordpress_plugin_development\wp-includes\class-wp-hook.php(286): WC_Worldpay->receipt_page(189)
+#1 F:\wamp64\www\wordpress_plugin_development\wp-includes\class-wp-hook.php(310): WP_Hook->apply_filters('', Array)
+#2 F:\wamp64\www\wordpress_plugin_development\wp-includes\plugin.php(465): WP_Hook->do_action(Array)
+#3 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\templates\checkout\order-receipt.php(45): do_action('woocommerce_rec...', 189)
+#4 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\wc-core-functions.php(211): include('F:\\wamp64\\www\\w...')
+#5 F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\woocommerce\includes\shortcodes\class-wc-shortcode-checkout.php(200): wc_get_template('checkout/order-...', Array)
+#6 F:\wamp64\www\wordpress_plug in F:\wamp64\www\wordpress_plugin_development\wp-content\plugins\my-worldpay-plugin\my-worldpay-plugin.php on line 111
+

@@ -1,0 +1,116 @@
+.worldpay-card-icons{
+	float: right;
+}
+li.payment_method_online_worldpay_paypal label img:first-of-type{
+	float: right;
+}
+li.payment_method_online_worldpay_paypal label[for=payment_method_online_worldpay_paypal] img{
+	max-width: 85px;
+}
+ul.payment_methods label .worldpay-card-icons img.worldpay-card-icon{
+	width: 47px;
+	height: 27px;
+	max-width: 47px;
+	max-height: 27px;
+	float: none;
+}
+.worldpay-saved-methods-container .select2-container--default .select2-selection--single{
+	height: 42px;
+	background-color: #fff !important;
+}
+.select2-container .select2-selection--single .worldpay-select2-container, 
+.select2-results__options li.worldpay-select2-container{
+    display: flex;
+    align-items: center;
+    height: 42px;
+}
+.worldpay-saved-methods-container  .select2-container--default .select2-selection--single .select2-selection__arrow{
+	height: 42px;
+}
+.worldpay-select2-container img.worldpay-method-icon{
+	width: 42px;
+	height: 24px;
+	max-width: 42px;
+	max-height: 24px;
+	margin-right: 1em;
+}
+ul.payment_methods .worldpay-saved-card-button, 
+ul.payment_methods .worldpay-new-card-button{
+	display: flex;
+	justify-content: flex-end;
+	cursor: pointer;
+    margin: 0.50em 0;
+}
+#worldpay_cvc_template_container{
+	margin-top: 2px;
+}
+#worldpay_cvc_template_container #_iframe_holder{
+	margin: 0px;
+}
+.worldpay_cvc_container{
+	margin-top: 0.75em;
+}
+.worldpay_cvc_container label{
+	margin: 0 0.25em;
+	font-weight: 400;
+	display: block;
+}
+.worldpay_cvc_container #worldpay_vaulted_cvc{
+	width: 70px;
+	height: 40px;
+	border: 1px solid #bbb;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    padding: 0.7em;
+    background-color: #fff;
+}
+
+#worldpay_vaulted_cvc::placeholder{
+	color: #ccc;
+}
+#worldpay_vaulted_cvc:focus{
+	border-color: #333;
+}
+ul.payment_methods label[for*="online_worldpay"]:after{
+	clear: right;
+	content: "";
+	display: block;
+}
+.worldpay-paypal-button{
+	background-color: #ffc439;
+	border-radius: 4px;
+	padding: 10px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
+}
+.worldpay-paypal-button img{
+	max-width: 65px;
+	max-height: 21px;
+}
+input.wc-worldpay-payment-type{
+	display: none;
+}
+label.wc-worldpay-label-payment-type{
+	margin-bottom: 1em;
+	display: block;
+}
+label.wc-worldpay-label-payment-type:before{
+	content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #000;
+    background: #fff;
+    margin-left: 4px;
+    margin-right: .5em;
+    border-radius: 100%;
+    -webkit-transform: translateY(2px);
+    -ms-transform: translateY(2px);
+    transform: translateY(2px);
+}
+input.wc-worldpay-payment-type:checked+label.wc-worldpay-label-payment-type:before{
+	background: #000;
+}
