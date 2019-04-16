@@ -1,0 +1,105 @@
+2019-04-03T08:23:19+00:00 ERROR Error processing Order 194. Reason: This card is not accepted for Test transactions. JSON: Array
+(
+    [customerOrderCode] => 194
+    [token] => TEST_SU_6effcba9-c2f0-4a09-b775-664c820530e1
+    [amount] => 4300
+    [currencyCode] => GBP
+    [name] => sf asdfasfasd
+    [authorizeOnly] => 
+    [orderDescription] => Order 194
+    [billingAddress] => Array
+        (
+            [address1] => sdfsaf
+            [address2] => 
+            [postalCode] => 3434343
+            [city] => sadfsaf
+            [state] => BA
+            [countryCode] => PK
+        )
+
+    [deliveryAddress] => Array
+        (
+            [firstName] => sf
+            [lastName] => asdfasfasd
+            [address1] => sdfsaf
+            [address2] => 
+            [postalCode] => 3434343
+            [city] => sadfsaf
+            [state] => BA
+            [countryCode] => PK
+        )
+
+    [orderCodePrefix] => 
+    [orderCodeSuffix] => 
+    [settlementCurrency] => GBP
+    [shopperEmailAddress] => sadfdasf@jflasdfdas.com
+    [shopperIpAddress] => 127.0.0.1
+    [shopperSessionId] => 5ca46d75765ac
+    [is3DSOrder] => 
+)
+
+2019-04-03T08:24:29+00:00 INFO Order 194 processed. Response: Array
+(
+    [orderCode] => 436de526-c5b0-4a4d-bef4-a3445278cb80
+    [token] => TEST_SU_9539b907-70a7-4b9b-ab14-7c0e5ed6c963
+    [orderDescription] => Order 194
+    [amount] => 4300
+    [currencyCode] => GBP
+    [paymentStatus] => SUCCESS
+    [paymentResponse] => Array
+        (
+            [type] => ObfuscatedCard
+            [name] => sf asdfasfasd
+            [expiryMonth] => 12
+            [expiryYear] => 2020
+            [cardType] => VISA_CREDIT
+            [maskedCardNumber] => **** **** **** 1111
+            [billingAddress] => Array
+                (
+                    [address1] => sdfsaf
+                    [postalCode] => 3434343
+                    [city] => sadfsaf
+                    [state] => BA
+                    [countryCode] => PK
+                )
+
+            [cardSchemeType] => consumer
+            [cardSchemeName] => VISA CREDIT
+            [cardIssuer] => NATWEST
+            [countryCode] => GB
+            [cardClass] => credit
+            [cardProductTypeDescNonContactless] => Visa Credit Personal
+            [cardProductTypeDescContactless] => CL Visa Credit Pers
+            [prepaid] => false
+        )
+
+    [is3DSOrder] => 
+    [authorizeOnly] => 
+    [deliveryAddress] => Array
+        (
+            [address1] => sdfsaf
+            [postalCode] => 3434343
+            [city] => sadfsaf
+            [state] => BA
+            [countryCode] => PK
+            [firstName] => sf
+            [lastName] => asdfasfasd
+        )
+
+    [settlementCurrency] => GBP
+    [shopperEmailAddress] => sadfdasf@jflasdfdas.com
+    [customerOrderCode] => 194
+    [environment] => TEST
+    [riskScore] => Array
+        (
+            [value] => 1
+        )
+
+    [resultCodes] => Array
+        (
+            [avsResultCode] => APPROVED
+            [cvcResultCode] => APPROVED
+        )
+
+)
+

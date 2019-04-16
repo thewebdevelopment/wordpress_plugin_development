@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+      <title></title>
+      <script src='https://cdn.worldpay.com/v1/worldpay.js'></script>
+    </head>
+    <body>
+      
+
+<!--   <form id='paymentForm' method='post' action='http://localhost/worldpay/create_order.php'>
+
+    <div id='myPaymentSection'>
+    	
+    </div>
+    <input type='button' onclick='Worldpay.submitTemplateForm()' value='Place Order' />
+  </form>
+
+ -->
+
+
+
+<form id="paymentForm" method="post" action="http://localhost/payment_gateways/worldpay/3d/create_order.php">
+  <span id="paymentErrors"></span>
+  <div class="form-row">
+    <label>Name on Card</label>
+    <input data-worldpay="name" name="name" type="text" value="Visa" id="name" />
+  </div>
+  <div class="form-row">
+    <label>Card Number</label>
+    <input data-worldpay="number" size="20" type="text" value="4012888888881881" />
+  </div>
+  <div class="form-row">
+    <label>Expiration (MM/YYYY)</label> 
+    <input data-worldpay="exp-month" size="2" type="text" value="10" /> 
+    <label> / </label>
+    <input data-worldpay="exp-year" size="4" type="text" value="2020" />
+  </div>
+  <div class="form-row">
+    <label>CVC</label>
+    <input data-worldpay="cvc" size="4" type="text" value="123" />
+  </div>
+  <input type="submit" value="Place Order" />
+</form>
+
+
+
+
+<script type="text/javascript">
+
+function makeid(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+document.getElementById('name').value = "Visa" + makeid(2);
+
+
+var form = document.getElementById('paymentForm');
+
+Worldpay.useOwnForm({
+  'clientKey':'T_C_5a5c185b-ef1d-424d-9978-b3d0f929183a',
+  'form': form,
+  'reusable': true,
+  'callback': function(status, response) {
+    document.getElementById('paymentErrors').innerHTML = '';
+    if (response.error) {             
+      Worldpay.handleError(form, document.getElementById('paymentErrors'), response.error); 
+    } else {
+      var token = response.token;
+      Worldpay.formBuilder(form, 'input', 'hidden', 'token', token);
+      form.submit();
+    }
+  }
+});
+</script>
+
+    </body>
+    </html>

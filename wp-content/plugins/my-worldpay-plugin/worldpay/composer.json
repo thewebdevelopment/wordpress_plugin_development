@@ -1,0 +1,5 @@
+{
+    "require": {
+        "worldpay/worldpay-lib-php": "^2.1"
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "8a35970f6dbbb0105d0317248f62567a",
+    "packages": [
+        {
+            "name": "worldpay/worldpay-lib-php",
+            "version": "2.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Worldpay/worldpay-lib-php.git",
+                "reference": "19995ee5a685b83986ac64e1e44561ea8b1a1c86"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Worldpay/worldpay-lib-php/zipball/19995ee5a685b83986ac64e1e44561ea8b1a1c86",
+                "reference": "19995ee5a685b83986ac64e1e44561ea8b1a1c86",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Worldpay\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Worldpay",
+                    "homepage": "https://online.worldpay.com"
+                }
+            ],
+            "description": "Worldpay PHP Library",
+            "homepage": "https://online.worldpay.com",
+            "keywords": [
+                "api",
+                "payments",
+                "uiisthebest",
+                "worldpay"
+            ],
+            "time": "2016-09-19T10:24:16+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

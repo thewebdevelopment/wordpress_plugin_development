@@ -30,11 +30,11 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	public $worldpay = null;
 
 	public static function init() {
-		add_action ( 'woocommerce_payment_token_deleted', array( 
-				__CLASS__, 'payment_token_deleted' 
+		add_action ( 'woocommerce_payment_token_deleted', array(
+				__CLASS__, 'payment_token_deleted'
 		), 10, 2 );
-		add_filter ( 'woocommerce_credit_card_type_labels', array( 
-				__CLASS__, 'credit_card_labels' 
+		add_filter ( 'woocommerce_credit_card_type_labels', array(
+				__CLASS__, 'credit_card_labels'
 		) );
 	}
 
@@ -53,29 +53,29 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function add_actions() {
-		add_action ( 'woocommerce_update_options_payment_gateways_' . $this->id, array( 
-				$this, 'process_admin_options' 
+		add_action ( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
+				$this, 'process_admin_options'
 		) );
-		add_action ( 'worldpay_before_process_payment', array( 
-				$this, 'maybe_save_payment_token' 
+		add_action ( 'worldpay_before_process_payment', array(
+				$this, 'maybe_save_payment_token'
 		), 10, 2 );
-		add_action ( $this->id . '_payment_token_deleted', array( 
-				$this, 'delete_payment_method' 
+		add_action ( $this->id . '_payment_token_deleted', array(
+				$this, 'delete_payment_method'
 		), 10, 2 );
-		add_action ( 'woocommerce_subscriptions_pre_update_payment_method', array( 
-				$this, 'pre_update_payment_method' 
+		add_action ( 'woocommerce_subscriptions_pre_update_payment_method', array(
+				$this, 'pre_update_payment_method'
 		), 10, 2 );
-		add_filter ( 'woocommerce_subscription_payment_meta', array( 
-				$this, 'subscription_payment_meta' 
+		add_filter ( 'woocommerce_subscription_payment_meta', array(
+				$this, 'subscription_payment_meta'
 		), 10, 2 );
-		add_action ( 'woocommerce_scheduled_subscription_payment_' . $this->id, array( 
-				$this, 'process_subscription_payment' 
+		add_action ( 'woocommerce_scheduled_subscription_payment_' . $this->id, array(
+				$this, 'process_subscription_payment'
 		), 10, 2 );
-		add_action ( 'woocommerce_order_status_completed', array( 
-				$this, 'capture_authorized_order' 
+		add_action ( 'woocommerce_order_status_completed', array(
+				$this, 'capture_authorized_order'
 		), 10, 2 );
-		add_filter ( 'woocommerce_get_customer_payment_tokens', array( 
-				$this, 'filter_payment_tokens' 
+		add_filter ( 'woocommerce_get_customer_payment_tokens', array(
+				$this, 'filter_payment_tokens'
 		), 10, 3 );
 	}
 
@@ -95,18 +95,18 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function set_supports() {
-		$this->supports = array( 'subscriptions', 
-				'products', 'add_payment_method', 
-				'subscription_cancellation', 
-				'multiple_subscriptions', 
-				'subscription_amount_changes', 
-				'subscription_date_changes', 
-				'default_credit_card_form', 'refunds', 
-				'pre-orders', 
-				'subscription_payment_method_change_admin', 
-				'subscription_reactivation', 
-				'subscription_suspension', 
-				'subscription_payment_method_change_customer' 
+		$this->supports = array( 'subscriptions',
+				'products', 'add_payment_method',
+				'subscription_cancellation',
+				'multiple_subscriptions',
+				'subscription_amount_changes',
+				'subscription_date_changes',
+				'default_credit_card_form', 'refunds',
+				'pre-orders',
+				'subscription_payment_method_change_admin',
+				'subscription_reactivation',
+				'subscription_suspension',
+				'subscription_payment_method_change_customer'
 		);
 	}
 
@@ -122,50 +122,50 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 		$order = wc_get_order ( $order_id );
 		do_action ( 'worldpay_before_process_payment', $order_id, $order, $this );
 		if (wc_notice_count ( 'error' ) > 0) {
-			return array( 'result' => 'failure' 
+			return array( 'result' => 'failure'
 			);
 		}
 		if ($this->update_payment_method_request) {
-			return array( 'result' => 'success', 
-					'redirect' => wc_get_endpoint_url ( 'view-subscription', $order_id, wc_get_page_permalink ( 'myaccount' ) ) 
+			return array( 'result' => 'success',
+					'redirect' => wc_get_endpoint_url ( 'view-subscription', $order_id, wc_get_page_permalink ( 'myaccount' ) )
 			);
 		}
 		if ($order->get_total () == 0) {
 			return $this->process_zero_amount_order ( $order );
 		}
 		$session_id = $this->get_shopper_session_id ();
-		$args = apply_filters ( 'worldpay_process_payment_args', array( 
-				'customerOrderCode' => $order->get_order_number (), 
-				'token' => $this->get_payment_token (), 
-				'amount' => round ( $order->get_total () * pow ( 10, worldpay_get_currency_code_exponent ( $order->get_currency () ) ), 0, PHP_ROUND_HALF_UP ), 
-				'currencyCode' => $order->get_currency (), 
-				'name' => $this->get_order_name ( $order ), 
-				'authorizeOnly' => $this->get_option ( 'charge_type' ) === 'authorize', 
-				'orderDescription' => sprintf ( __ ( 'Order %s', 'worldpay' ), $order_id ), 
-				'billingAddress' => array( 
-						'address1' => $order->get_billing_address_1 (), 
-						'address2' => $order->get_billing_address_2 (), 
-						'postalCode' => $order->get_billing_postcode (), 
-						'city' => $order->get_billing_city (), 
-						'state' => $order->get_billing_state (), 
-						'countryCode' => $order->get_billing_country () 
-				), 
-				'deliveryAddress' => $order->get_shipping_address_1 () ? array( 
-						'firstName' => $order->get_shipping_first_name (), 
-						'lastName' => $order->get_shipping_last_name (), 
-						'address1' => $order->get_shipping_address_1 (), 
-						'address2' => $order->get_shipping_address_2 (), 
-						'postalCode' => $order->get_shipping_postcode (), 
-						'city' => $order->get_shipping_city (), 
-						'state' => $order->get_shipping_state (), 
-						'countryCode' => $order->get_shipping_country () 
-				) : array(), 
-				'orderCodePrefix' => $this->get_option ( 'order_prefix' ), 
-				'orderCodeSuffix' => $this->get_option ( 'order_suffix' ), 
-				'settlementCurrency' => $this->get_option ( 'settlement_currency' ), 
-				'shopperEmailAddress' => $order->get_billing_email (), 
-				'shopperIpAddress' => $order->get_customer_ip_address (), 
-				'shopperSessionId' => $session_id 
+		$args = apply_filters ( 'worldpay_process_payment_args', array(
+				'customerOrderCode' => $order->get_order_number (),
+				'token' => $this->get_payment_token (),
+				'amount' => round ( $order->get_total () * pow ( 10, worldpay_get_currency_code_exponent ( $order->get_currency () ) ), 0, PHP_ROUND_HALF_UP ),
+				'currencyCode' => $order->get_currency (),
+				'name' => $this->get_order_name ( $order ),
+				'authorizeOnly' => $this->get_option ( 'charge_type' ) === 'authorize',
+				'orderDescription' => sprintf ( __ ( 'Order %s', 'worldpay' ), $order_id ),
+				'billingAddress' => array(
+						'address1' => $order->get_billing_address_1 (),
+						'address2' => $order->get_billing_address_2 (),
+						'postalCode' => $order->get_billing_postcode (),
+						'city' => $order->get_billing_city (),
+						'state' => $order->get_billing_state (),
+						'countryCode' => $order->get_billing_country ()
+				),
+				'deliveryAddress' => $order->get_shipping_address_1 () ? array(
+						'firstName' => $order->get_shipping_first_name (),
+						'lastName' => $order->get_shipping_last_name (),
+						'address1' => $order->get_shipping_address_1 (),
+						'address2' => $order->get_shipping_address_2 (),
+						'postalCode' => $order->get_shipping_postcode (),
+						'city' => $order->get_shipping_city (),
+						'state' => $order->get_shipping_state (),
+						'countryCode' => $order->get_shipping_country ()
+				) : array(),
+				'orderCodePrefix' => $this->get_option ( 'order_prefix' ),
+				'orderCodeSuffix' => $this->get_option ( 'order_suffix' ),
+				'settlementCurrency' => $this->get_option ( 'settlement_currency' ),
+				'shopperEmailAddress' => $order->get_billing_email (),
+				'shopperIpAddress' => $order->get_customer_ip_address (),
+				'shopperSessionId' => $session_id
 		), $order, $this->id );
 		try {
 			$return = array();
@@ -181,13 +181,13 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 				$order->update_status ( apply_filters ( 'worldpay_authorized_order_status', $this->get_option ( 'authorize_status' ), $order, $this->id ) );
 			} else if ($response[ 'paymentStatus' ] === 'PRE_AUTHORIZED') {
 				if ($this->is_active ( '3ds_enabled' ) && ! empty ( $response[ 'redirectURL' ] )) {
-					$threeDS_data = array( 
-							'redirect_url' => $response[ 'redirectURL' ], 
-							'3ds_token' => $response[ 'oneTime3DsToken' ], 
-							'order_code' => $response[ 'orderCode' ], 
-							'order_id' => $order_id, 
-							'session_id' => $session_id, 
-							'return_url' => $this->get_3ds_return_url () 
+					$threeDS_data = array(
+							'redirect_url' => $response[ 'redirectURL' ],
+							'3ds_token' => $response[ 'oneTime3DsToken' ],
+							'order_code' => $response[ 'orderCode' ],
+							'order_id' => $order_id,
+							'session_id' => $session_id,
+							'return_url' => $this->get_3ds_return_url ()
 					);
 					$session->set ( 'worldpay_3ds_data', $threeDS_data );
 					$order->save ();
@@ -195,9 +195,9 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 					$return[ 'redirect' ] = get_permalink ( $this->get_option ( '3dsecure_page' ) );
 					return $return;
 				} else if ($this->is_apm_order ()) {
-					$session->set ( 'worldpay_paypal_order', array( 
-							'order_id' => $order_id, 
-							'response' => $response 
+					$session->set ( 'worldpay_paypal_order', array(
+							'order_id' => $order_id,
+							'response' => $response
 					) );
 					$order->set_transaction_id ( $response[ 'orderCode' ] );
 					$return[ 'result' ] = 'success';
@@ -217,7 +217,7 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 			$order->add_order_note ( sprintf ( __ ( 'Error processing payment. Reason: %s', 'worldpay' ), $e->getMessage () ) );
 			wc_add_notice ( sprintf ( __ ( 'Error processing payment. Reason: %s', 'worldpay' ), $e->getMessage () ), 'error' );
 			worldpay_log_error ( sprintf ( __ ( 'Error processing Order %1$s. Reason: %2$s. JSON: %3$s', 'worldpay' ), $order->get_id (), $e->getMessage (), print_r ( $args, true ) ) );
-			return array( 'success' => 'failure' 
+			return array( 'success' => 'failure'
 			);
 		}
 	}
@@ -246,7 +246,7 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	 * Process an order for which the order amount is $0.
 	 * This is common for subscriptions that have a trial date or are synchronized.
 	 *
-	 * @param WC_Order $order        	
+	 * @param WC_Order $order
 	 */
 	public function process_zero_amount_order($order) {
 		if (worldpay_wcs_active ()) {
@@ -270,8 +270,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 		$order->save ();
 		$order->payment_complete ();
 		WC ()->cart->empty_cart ();
-		return array( 'result' => 'success', 
-				'redirect' => $order->get_checkout_order_received_url () 
+		return array( 'result' => 'success',
+				'redirect' => $order->get_checkout_order_received_url ()
 		);
 	}
 
@@ -284,8 +284,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Add order meta data to the order after payment has been processed.
 	 *
-	 * @param WC_Order $order        	
-	 * @param array $response        	
+	 * @param WC_Order $order
+	 * @param array $response
 	 */
 	protected function add_order_meta($order, $response) {
 		$payment_token = worldpay_create_wc_payment_token ( $response[ 'token' ], $response[ 'paymentResponse' ], $this->id );
@@ -352,7 +352,7 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Return the service key for the currently active environment.
 	 *
-	 * @param string $env        	
+	 * @param string $env
 	 * @return string
 	 */
 	public function get_service_key($env = '') {
@@ -390,19 +390,19 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 			worldpay_log_error ( sprintf ( __ ( 'Error saving User %s payment method. Reason: %s', 'worldpay' ), $user->ID, $e->getMessage () ) );
 			// if result is not equal to success or failure, then WC doesn't add a notice. That's good because
 			// we want to use our own notice here.
-			return array( 'result' => 'exception' 
+			return array( 'result' => 'exception'
 			);
 		}
-		return array( 'result' => 'success', 
-				'redirect' => wc_get_account_endpoint_url ( 'payment-methods' ) 
+		return array( 'result' => 'success',
+				'redirect' => wc_get_account_endpoint_url ( 'payment-methods' )
 		);
 	}
 
 	/**
 	 * This method is static because WC does not initialize gateways during the delete payment method call.
 	 *
-	 * @param int $token_id        	
-	 * @param WC_Payment_Token $token        	
+	 * @param int $token_id
+	 * @param WC_Payment_Token $token
 	 */
 	public static function payment_token_deleted($token_id, $token) {
 		if (! did_action ( 'woocommerce_payment_gateways' )) {
@@ -413,8 +413,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param int $token_id        	
-	 * @param WC_Payment_Token $token        	
+	 * @param int $token_id
+	 * @param WC_Payment_Token $token
 	 */
 	public function delete_payment_method($token_id, $token) {
 		try {
@@ -440,7 +440,7 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param WC_Order $order        	
+	 * @param WC_Order $order
 	 */
 	public function get_order_name($order) {
 		$name = '';
@@ -465,8 +465,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Save the payment method if the cart has a subscription and a new payment method is being used.
 	 *
-	 * @param int $order_id        	
-	 * @param WC_Order $order        	
+	 * @param int $order_id
+	 * @param WC_Order $order
 	 */
 	public function maybe_save_payment_token($order_id, $order) {
 		if (worldpay_wcs_active () && ! $this->use_saved_method () && $order->get_payment_method () === $this->id) {
@@ -503,8 +503,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param WC_Order $order        	
-	 * @param float $amount        	
+	 * @param WC_Order $order
+	 * @param float $amount
 	 */
 	public function capture_charge($order, $amount) {
 		if (static::$capturing_charge) {
@@ -541,8 +541,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param string $order_code        	
-	 * @param WC_Order $order        	
+	 * @param string $order_code
+	 * @param WC_Order $order
 	 */
 	public function cancel_order($order_code, $order) {
 		$this->connect ( $order->get_meta ( '_worldpay_environment' ) );
@@ -569,7 +569,7 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param WC_Subscription $subscription        	
+	 * @param WC_Subscription $subscription
 	 */
 	public function subscription_payment_method_updated($subscription) {
 		$token = '';
@@ -602,8 +602,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param WC_Subscription $subscription        	
-	 * @param string $new_payment_method        	
+	 * @param WC_Subscription $subscription
+	 * @param string $new_payment_method
 	 */
 	public function pre_update_payment_method($subscription, $new_payment_method) {
 		if ($new_payment_method === $this->id) {
@@ -613,17 +613,17 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param array $payment_meta        	
-	 * @param WC_Subscription $subscription        	
+	 * @param array $payment_meta
+	 * @param WC_Subscription $subscription
 	 */
 	public function subscription_payment_meta($payment_meta, $subscription) {
-		$payment_meta[ $this->id ] = array( 
-				'post_meta' => array( 
-						'_payment_method_token' => array( 
-								'value' => $subscription->get_meta ( '_payment_method_token' ), 
-								'label' => __ ( 'Payment Method Token', 'worldpay' ) 
-						) 
-				) 
+		$payment_meta[ $this->id ] = array(
+				'post_meta' => array(
+						'_payment_method_token' => array(
+								'value' => $subscription->get_meta ( '_payment_method_token' ),
+								'label' => __ ( 'Payment Method Token', 'worldpay' )
+						)
+				)
 		);
 		return $payment_meta;
 	}
@@ -631,42 +631,42 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Process the WCS scheduled payment.
 	 *
-	 * @param float $amount        	
-	 * @param WC_Order $order        	
+	 * @param float $amount
+	 * @param WC_Order $order
 	 */
 	public function process_subscription_payment($amount, $order) {
-		$args = apply_filters ( 'worldpay_process_subscription_payment_args', array( 
-				'orderType' => 'RECURRING', 
-				'customerOrderCode' => $order->get_order_number (), 
-				'token' => $order->get_meta ( '_payment_method_token' ), 
-				'amount' => $amount * pow ( 10, worldpay_get_currency_code_exponent ( $order->get_currency () ) ), 
-				'currencyCode' => $order->get_currency (), 
-				'name' => sprintf ( __ ( '%1$s %2$s', 'worldpay' ), $order->get_billing_first_name (), $order->get_billing_last_name () ), 
-				'authorizeOnly' => $this->get_option ( 'wcs_charge_type' ) === 'authorize', 
-				'orderDescription' => sprintf ( __ ( 'Renewal order %s', 'worldpay' ), $order->get_order_number () ), 
-				'billingAddress' => array( 
-						'address1' => $order->get_billing_address_1 (), 
-						'address2' => $order->get_billing_address_2 (), 
-						'postalCode' => $order->get_billing_postcode (), 
-						'city' => $order->get_billing_city (), 
-						'state' => $order->get_billing_state (), 
-						'countryCode' => $order->get_billing_country () 
-				), 
-				'deliveryAddress' => $order->get_shipping_address_1 () ? array( 
-						'firstName' => $order->get_shipping_first_name (), 
-						'lastName' => $order->get_shipping_last_name (), 
-						'address1' => $order->get_shipping_address_1 (), 
-						'address2' => $order->get_shipping_address_2 (), 
-						'postalCode' => $order->get_shipping_postcode (), 
-						'city' => $order->get_shipping_city (), 
-						'state' => $order->get_shipping_state (), 
-						'countryCode' => $order->get_shipping_country () 
-				) : array(), 
-				'orderCodePrefix' => $this->get_option ( 'order_prefix' ), 
-				'orderCodeSuffix' => $this->get_option ( 'order_suffix' ), 
-				'settlementCurrency' => $this->get_option ( 'settlement_currency' ), 
-				'shopperEmailAddress' => $order->get_billing_email (), 
-				'shopperIpAddress' => $order->get_customer_ip_address () 
+		$args = apply_filters ( 'worldpay_process_subscription_payment_args', array(
+				'orderType' => 'RECURRING',
+				'customerOrderCode' => $order->get_order_number (),
+				'token' => $order->get_meta ( '_payment_method_token' ),
+				'amount' => $amount * pow ( 10, worldpay_get_currency_code_exponent ( $order->get_currency () ) ),
+				'currencyCode' => $order->get_currency (),
+				'name' => sprintf ( __ ( '%1$s %2$s', 'worldpay' ), $order->get_billing_first_name (), $order->get_billing_last_name () ),
+				'authorizeOnly' => $this->get_option ( 'wcs_charge_type' ) === 'authorize',
+				'orderDescription' => sprintf ( __ ( 'Renewal order %s', 'worldpay' ), $order->get_order_number () ),
+				'billingAddress' => array(
+						'address1' => $order->get_billing_address_1 (),
+						'address2' => $order->get_billing_address_2 (),
+						'postalCode' => $order->get_billing_postcode (),
+						'city' => $order->get_billing_city (),
+						'state' => $order->get_billing_state (),
+						'countryCode' => $order->get_billing_country ()
+				),
+				'deliveryAddress' => $order->get_shipping_address_1 () ? array(
+						'firstName' => $order->get_shipping_first_name (),
+						'lastName' => $order->get_shipping_last_name (),
+						'address1' => $order->get_shipping_address_1 (),
+						'address2' => $order->get_shipping_address_2 (),
+						'postalCode' => $order->get_shipping_postcode (),
+						'city' => $order->get_shipping_city (),
+						'state' => $order->get_shipping_state (),
+						'countryCode' => $order->get_shipping_country ()
+				) : array(),
+				'orderCodePrefix' => $this->get_option ( 'order_prefix' ),
+				'orderCodeSuffix' => $this->get_option ( 'order_suffix' ),
+				'settlementCurrency' => $this->get_option ( 'settlement_currency' ),
+				'shopperEmailAddress' => $order->get_billing_email (),
+				'shopperIpAddress' => $order->get_customer_ip_address ()
 		), $order, $this->id );
 		try {
 			$this->connect ( $order->get_meta ( '_worldpay_environment' ) );
@@ -691,8 +691,8 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 *
-	 * @param int $order_id        	
-	 * @param WC_Order $order        	
+	 * @param int $order_id
+	 * @param WC_Order $order
 	 */
 	public function capture_authorized_order($order_id, $order) {
 		if ($order->get_meta ( '_worldpay_payment_status' ) === 'AUTHORIZED') {
@@ -706,9 +706,9 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Filter payment tokens based on the current environment.
 	 *
-	 * @param WC_Payment_Token[] $tokens        	
-	 * @param int $user_id        	
-	 * @param string $gateway_id        	
+	 * @param WC_Payment_Token[] $tokens
+	 * @param int $user_id
+	 * @param string $gateway_id
 	 */
 	public function filter_payment_tokens($tokens, $user_id, $gateway_id) {
 		$env = worldpay_get_environment ();
@@ -722,4 +722,4 @@ class WC_Online_Worldpay_Payment_Gateway extends WC_Payment_Gateway {
 		return $tokens;
 	}
 }
-WC_Online_Worldpay_Payment_Gateway::init ();
+WC_Online_Worldpay_Payment_Gateway::init();

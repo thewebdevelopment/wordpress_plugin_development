@@ -1,8 +1,7 @@
 <?php
 namespace Worldpay;
 
-class Connection
-{
+class Connection {
 
     private $service_key = "";
     private $timeout = 65;
@@ -11,9 +10,11 @@ class Connection
     private $client_user_agent = "";
 
     private function __construct()
-    { }
+    {
 
-    /**
+    }
+
+     /**
      * Call this method to get singleton
      *
      * @return Connection
@@ -54,8 +55,9 @@ class Connection
 
     private function getBaseClientUserAgent()
     {
-        $arch = (bool)((1 << 32) - 1) ? 'x64' : 'x86';
-        $clientUA = 'os.arch=' . $arch . ';lang.version=' . phpversion() . ';lib.version=2.1.0;' . 'api.version=v1;lang=php;owner=worldpay';
+        $arch = (bool)((1<<32)-1) ? 'x64' : 'x86';
+        $clientUA = 'os.name=' . php_uname('s') . ';os.version=' . php_uname('r') . ';os.arch=' .
+        $arch . ';lang.version='. phpversion() . ';lib.version=2.1.0;' . 'api.version=v1;lang=php;owner=worldpay';
         return $clientUA;
     }
 
@@ -63,14 +65,14 @@ class Connection
     {
         $this->client_user_agent = $this->getBaseClientUserAgent();
         if ($pluginName) {
-            $this->client_user_agent .= ';plugin.name=' . $pluginName;
+             $this->client_user_agent .= ';plugin.name=' . $pluginName;
         }
         if ($pluginVersion) {
-            $this->client_user_agent .= ';plugin.version=' . $pluginVersion;
+             $this->client_user_agent .= ';plugin.version=' . $pluginVersion;
         }
     }
 
-    /**
+     /**
      * Sends request to Worldpay API
      * @param string $action
      * @param string $json
@@ -81,13 +83,12 @@ class Connection
     public function sendRequest($action, $json = false, $expectResponse = false, $method = 'POST')
     {
 
-        @mail('sdlfkaj@jflsadjflasd.com', 'json data email', $json);
         print_r($json);
 
-        //exit;
 
+        
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->endpoint . $action);
+        curl_setopt($ch, CURLOPT_URL, $this->endpoint.$action);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -138,7 +139,7 @@ class Connection
         $response = self::handleResponse($result);
 
         // Check JSON has decoded correctly
-        if ($expectResponse && ($response === null || $response === false)) {
+        if ($expectResponse && ($response === null || $response === false )) {
             Error::throwError('uanv', Error::$errors['json'], 503);
         }
 
@@ -154,10 +155,13 @@ class Connection
                     $response['description'],
                     $response['customCode']
                 );
+
             }
+
         } elseif ($expectResponse && $info['http_code'] != 200) {
             // If we expect a result and we have an error
             Error::throwError('uanv', Error::$errors['json'], 503);
+
         } elseif (!$expectResponse) {
 
             if ($info['http_code'] != 200) {
